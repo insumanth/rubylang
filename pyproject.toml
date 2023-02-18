@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rubylang"
-version = "0.0.2"
+version = "0.0.3"
 description = "Ruby like objects in Python"
 authors = ["Sumanth <sumanthreddystar@gmail.com>"]
 readme = "README.md"
@@ -18,9 +18,10 @@ keywords = [
 
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.8"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+

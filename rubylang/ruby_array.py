@@ -1,12 +1,13 @@
+from __future__ import annotations
+from typing import List, Set, Dict, Tuple, Union, Optional, Any, Callable, Iterable, SupportsIndex
+
+import warnings
+
 """
 TODO Implement Enumerable https://ruby-doc.org/3.1.3/Enumerable.html
 TODO Docstrings numpy style
 
 """
-
-from typing import List, Set, Dict, Tuple, Union, Optional, Any, Callable, Iterable, Self, SupportsIndex
-
-import warnings
 
 
 class Array(list):
@@ -49,42 +50,16 @@ class Array(list):
     def try_convert(cls):
         pass
 
-    # ----------------------Notes-------------------------------------
-
-    # Private Method to retrieve Notes
-    def __notes(self, identifier):
-        pass
-
     # -----------------------------------------------------------------------------------------------
     # Methods for Querying.
     # https://docs.ruby-lang.org/en/master/Array.html#class-Array-label-Methods+for+Querying
     # -----------------------------------------------------------------------------------------------
 
+    # Returns the count of elements.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-length
     def length(self) -> int:
         """
-        The length or size of the Array.
-
-        Returns
-        -------
-        int
-            Returns the count of elements in self
-
-        Examples
-        --------
-        >>> Array([]).length()
-        0
-        >>> Array([1,None,'a',"String", ["Nested", "list"], {"Dict" : "Object"} ]).length()
-        6
-        """
-        return len(self)
-
-    # https://docs.ruby-lang.org/en/master/Array.html#method-i-size
-    def size(self) -> int:
-        """
-        The length or size of the Array.
-
-        self.size() is a alias for self.length()
+        The length or size of the Array. Also aliased as: size
 
         Returns
         -------
@@ -95,15 +70,23 @@ class Array(list):
         --------
         >>> Array([]).size()
         0
-        >>> Array([1,None,'a',"String", ["Nested", "list"], {"Dict" : "Object"} ]).size()
+        >>> Array([1,None,'a',"String", ["Nested", "list"], {"Dict" : "Object"} ]).length()
         6
         """
-        return self.length()
+        return len(self)
 
+    # Returns the count of elements.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-size
+    # ==> [alias]
+    size = length
+
+    # Returns whether any element == a given object.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-include-3F
     def include(self, item: object) -> bool:
         """
-        Checks if the item is present Array.
+        Returns whether any element == a given object.
+
+        Returns true if for some index i in self, obj == self[i]; otherwise false:
 
         Parameters
         ----------
@@ -124,10 +107,13 @@ class Array(list):
         """
         return item in self
 
+    # Returns whether there are no elements.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-empty-3F
     def empty(self) -> bool:
         """
-        Checks if the Array is empty.
+        Returns whether there are no elements.
+
+        Returns true if the count of elements in self is zero, false otherwise.
 
         Returns
         -------
@@ -144,36 +130,6 @@ class Array(list):
 
         """
         return not bool(self)
-
-    # Private Method
-    # Helper for self.one? to be able to pass into self.__check_all_any method.
-    # def __has_one(self, iterable: Iterable) -> bool:
-    #     """
-    #     Checks if the iterable contains exactly one Truthy value.
-    #
-    #     Notes
-    #     ------
-    #     Helper for self.one? to be able to pass this method into self.__check_all_any method.
-    #
-    #     Parameters
-    #     ----------
-    #     iterable: Iterable
-    #         Any Python Iterable that will be used to check.
-    #
-    #     Returns
-    #     -------
-    #     bool
-    #         True if the Iterable contains exactly one Truthy value, False otherwise.
-    #     """
-    #     has_one_true = None
-    #
-    #     boolean_list: list = [bool(val) for val in iterable]
-    #     if sum(boolean_list) == 1:
-    #         has_one_true = True
-    #     else:
-    #         has_one_true = False
-    #
-    #     return has_one_true
 
     def __is_default_args(self, obj: Any) -> bool:
         if isinstance(obj, self._RLDefault):
@@ -221,10 +177,11 @@ class Array(list):
 
         return status
 
+    #  Returns whether all elements meet a given criterion.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-all-3F
     def all(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> bool:
         """
-        Checks if all elements satisfy a given condition
+         Returns whether all elements meet a given criterion.
 
         With no block given and no argument, returns true if self contains only truthy elements, false otherwise
         With a block given and no argument, calls the block with each element in self;
@@ -291,10 +248,11 @@ class Array(list):
 
         return self.__check_all_any(all, obj, block)
 
+    # Returns whether any element meets a given criterion.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-any-3F
     def any(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> bool:
         """
-        Checks if atleast one (any) elements satisfy a given condition
+        Returns whether any element meets a given criterion.
 
         With no block given and no argument, returns true if self has any truthy element, false otherwise:
         With a block given and no argument, calls the block with each element in self;
@@ -362,10 +320,11 @@ class Array(list):
 
         return self.__check_all_any(any, obj, block)
 
+    # Returns whether no element == a given object.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-none-3F
     def none(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> bool:
         """
-        Checks if atleast one (any) elements satisfy a given condition
+        Returns whether no element == a given object.
 
         With no block given and no argument, returns true if self has no truthy elements, false otherwise:
         With a block given and no argument, calls the block with each element in self;
@@ -430,10 +389,11 @@ class Array(list):
 
         return not self.__check_all_any(any, obj, block)
 
+    # Returns whether exactly one element == a given object.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-one-3F
     def one(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> bool:
         """
-        Checks if exactly one element satisfy a given condition
+         Returns whether exactly one element == a given object.
 
         With no block given and no argument, returns true if self has exactly one truthy element, false otherwise:
         With a block given and no argument, calls the block with each element in self;
@@ -510,10 +470,11 @@ class Array(list):
     def __count_truthy(self, iterable: Iterable) -> bool:
         return sum([bool(val) for val in iterable])
 
+    #  Returns the count of elements that meet a given criterion.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-count
     def count(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> bool:
         """
-        Returns a count of specified elements.
+        Returns the count of elements that meet a given criterion.
 
         With no argument and no block, returns the count of all elements:
         With argument obj, returns the count of elements == to obj:
@@ -566,27 +527,134 @@ class Array(list):
 
         return value
 
-    # TODO-IMPLEMENT
+    # Returns the index of the first element that meets a given criterion.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-index
     def index(self, obj: Optional[Any] = _RLDefault(None), *,
               block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
-        pass
+        """
+        Returns the index of a specified element. Alias for: find_index
 
-    # TODO-IMPLEMENT
+        Returns the index of the first element that meets a given criterion.
+        When argument object is given but no block, returns the index of the first element for which object == element:
+        Returns nil if no such element found.
+        When a block is given, calls the block with each successive element;
+        returns the index of the first element for which the block returns a truthy value
+        Returns nil if the block never returns a truthy value.
+        When neither an argument nor a block is given, returns a new Enumerator(Iterator):
+
+        Parameters
+        ----------
+        obj: Optional[Any] = _RLDefault(None)
+            The element that will be compared with self to return its first index
+        block: Optional[Callable[[Any], Any]] = None
+            The function in which each element will be passed to check.
+
+        Returns
+        -------
+        int | None | Iterable
+            Index of the object if found in self. None otherwise.
+            Iterable if no args or block is given
+
+        Examples
+        --------
+        >>> Array(['foo', 'bar', 2, 'bar']).index('bar')
+        1
+        >>> Array(['foo', 'bar', 2, 'bar']).index(block=lambda x: x == 'bar')
+        1
+        >>> iter_obj = Array(['foo', 'bar', 2, 'bar']).index()
+        >>> list(iter_obj)
+        ['foo', 'bar', 2, 'bar']
+        """
+
+        if self.__is_passed_args(obj) and block:
+            warnings.warn("Ignoring Block since both block and argument is passed.")
+
+        value = None
+        if self.__is_passed_args(obj):
+            if obj in self:
+                value = super().index(obj)
+            else:
+                value = None
+        elif block:
+            collected_values = [bool(block(val)) for val in self]
+            if True in collected_values:
+                value = collected_values.index(True)
+            else:
+                value = None
+        else:
+            value = iter(self)
+
+        return value
+
+    # Returns the index of the first element that meets a given criterion.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-find_index
-    def find_index(self, obj: Optional[Any] = _RLDefault(None), *,
-                   block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
-        return self.index(obj, block=block)
+    # ==> [alias]
+    find_index = index
 
     # TODO-IMPLEMENT
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-rindex
     def rindex(self, obj: Optional[Any] = _RLDefault(None), *,
                block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
-        pass
+        """
+        Returns the index of the last element that meets a given criterion.
 
-    # TODO-IMPLEMENT
+        When argument object is given but no block, returns the index of the last such element found:
+        Returns nil if no such object found.
+        When a block is given but no argument, calls the block with each successive element; returns the index of the last element for which the block returns a truthy value:
+        Returns nil if the block never returns a truthy value.
+        When neither an argument nor a block is given, returns a new Enumerator:
+
+        Parameters
+        ----------
+        obj: Optional[Any] = _RLDefault(None)
+            The element that will be compared with self to return its first index
+        block: Optional[Callable[[Any], Any]] = None
+            The function in which each element will be passed to check.
+
+        Returns
+        -------
+        int | None | Iterable
+            Last Index of the object if found in self. None otherwise.
+            Iterable if no args or block is given
+
+        Examples
+        --------
+        >>> Array(['foo', 'bar', 2, 'bar']).rindex('bar')
+        3
+        >>> Array(['foo', 'bar', 2, 'bar']).rindex(block=lambda x: x == 'bar')
+        3
+        >>> iter_obj = Array(['foo', 'bar', 2, 'bar']).rindex()
+        >>> list(iter_obj)
+        ['foo', 'bar', 2, 'bar']
+        """
+
+        if self.__is_default_args(obj) and block is None:
+            value = iter(self)
+        else:
+            # TODO Replace with .reverse() when implemented.
+            reversed_array = Array(reversed(self))
+
+            reversed_index = reversed_array.index(obj, block=block)
+            if isinstance(reversed_index, int) :
+                value = self.length() - reversed_index - 1
+            else:
+                value = reversed_index
+
+        return value
+
+
+
+    # TODO-CHECK
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-rindex
     def hash(self) -> int:
+        """
+        Returns id of self
+
+        Returns
+        -------
+        int
+            Returns id of self
+        """
         return id(self)
 
     # ---------------------------------------------------------------------------------
@@ -596,7 +664,7 @@ class Array(list):
 
     # <=> RENAMED to compare
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-3C-3D-3E
-    def compare(self, other_array: Self) -> int:
+    def compare(self, other_array: Array) -> int:
         """
         Compare Arrays and returns -1, 0 or 1.
 
@@ -649,7 +717,7 @@ class Array(list):
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-3C-3D-3E
 
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-eql-3F
-    def eql(self, other_array: Self) -> bool:
+    def eql(self, other_array: Array) -> bool:
         """
         Checks if two Arrays are Equal.
 
@@ -692,7 +760,7 @@ class Array(list):
 
     # push, append, <<: Appends trailing elements.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-push
-    def push(self, *objects: Any) -> Self:
+    def push(self, *objects: Any) -> Array:
         """
         Appends trailing elements. Also aliased as: append_multiple
 
@@ -730,10 +798,10 @@ class Array(list):
     # ==> [alias]
     append = push
 
-    # INEFFICIENT, OPTOMIZE, we can right shift bulk and copy once insted of each element.
+    # INEFFICIENT, OPTIMIZE, we can right shift bulk and copy once instead of each element.
     # unshift, prepend: Prepends leading elements.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-unshift
-    def unshift(self, *objects: Any) -> Self:
+    def unshift(self, *objects: Any) -> Array:
         """
         Prepends the given objects to self: Also aliased as: prepend
 
@@ -770,7 +838,7 @@ class Array(list):
 
     # insert: Inserts given objects at a given offset; does not replace elements.
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-insert
-    def insert(self, _index: SupportsIndex, _object: Any) -> None:
+    def insert(self, _index: SupportsIndex, _object: Any) -> Array:
         """
         Inserts given objects at a given offset; does not replace elements.
 
