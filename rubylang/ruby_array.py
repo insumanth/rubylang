@@ -4,7 +4,7 @@ TODO Docstrings numpy style
 
 """
 
-from typing import List, Set, Dict, Tuple, Union, Optional, Any, Callable, Iterable
+from typing import List, Set, Dict, Tuple, Union, Optional, Any, Callable, Iterable, Self, SupportsIndex
 
 import warnings
 
@@ -566,22 +566,237 @@ class Array(list):
 
         return value
 
+    # TODO-IMPLEMENT
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-index
-    def index(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
+    def index(self, obj: Optional[Any] = _RLDefault(None), *,
+              block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
         pass
 
+    # TODO-IMPLEMENT
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-find_index
-    def find_index(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
-        return self.index(obj, block= block)
+    def find_index(self, obj: Optional[Any] = _RLDefault(None), *,
+                   block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
+        return self.index(obj, block=block)
 
+    # TODO-IMPLEMENT
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-rindex
-    def rindex(self, obj: Optional[Any] = _RLDefault(None), *, block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
+    def rindex(self, obj: Optional[Any] = _RLDefault(None), *,
+               block: Optional[Callable[[Any], Any]] = None) -> int | None | Iterable:
         pass
 
+    # TODO-IMPLEMENT
     # https://docs.ruby-lang.org/en/master/Array.html#method-i-rindex
     def hash(self) -> int:
         return id(self)
 
+    # ---------------------------------------------------------------------------------
+    #   Methods for Comparing
+    #   https://docs.ruby-lang.org/en/master/Array.html
+    # ---------------------------------------------------------------------------------
+
+    # <=> RENAMED to compare
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-3C-3D-3E
+    def compare(self, other_array: Self) -> int:
+        """
+        Compare Arrays and returns -1, 0 or 1.
+
+        if self == other_array, returns 0
+        if self < other_array, returns -1
+        if self > other_array, returns 1
+
+        Returns -1, 0, or 1 as self is less than, equal to, or greater than other_array. For each index i in self,
+        evaluates result = self[i] compares other_array[i]
+        Returns -1 if any result is -1:
+        Returns 1 if any result is 1:
+        When all results are zero:
+        Returns -1 if array is smaller than other_array:
+        Returns 1 if array is larger than other_array
+        Returns 0 if array and other_array are the same size:
+
+        Parameters
+        ----------
+        other_array:
+            Array Object to compare.
+
+        Returns
+        -------
+        int
+            -1, 0 or 1 based result of comparision between the arrays.
+
+        Examples
+        --------
+        >>> Array([0, 1, 2]).compare(Array([0, 1, 3]))
+        -1
+        >>> Array([0, 1, 2]).compare(Array([0, 1, 1]))
+        1
+        >>> Array([0, 1, 2]).compare(Array([0, 1, 2, 3]))
+        -1
+        >>> Array([0, 1, 2]).compare(Array([0, 1]))
+        1
+        >>> Array([0, 1, 2]).compare(Array([0, 1, 2]))
+        0
+        """
+
+        if self == other_array:
+            return 0
+        elif self < other_array:
+            return -1
+        else:
+            return 1
+
+    # No Need to Implement
+    # ==
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-3C-3D-3E
+
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-eql-3F
+    def eql(self, other_array: Self) -> bool:
+        """
+        Checks if two Arrays are Equal.
+
+        Returns true if self and other_array are the same size, and if,
+        for each index i in self, self[i] == other_array[i]
+
+        Parameters
+        ----------
+        other_array: Self
+
+
+        Returns
+        -------
+        bool
+            True if both arrays are equal, False otherwise
+
+        Examples
+        --------
+        >>> Array(["foo", 'bar', 2]).eql(Array(["foo", 'bar', 2]))
+        True
+
+        >>> Array(["foo", 'bar', "2"]).eql(Array(["foo", 'bar', 2]))
+        False
+
+        Notes
+        -----
+        This Method should compare based on .eql? on both objects,
+        But simply comparing using == since Python does not follow .eql? convension.
+        """
+        return self == other_array
+
+    # ---------------------------------------------------------------------------------
+    #   Methods for Assigning
+    #   https://docs.ruby-lang.org/en/master/Array.html#class-Array-label-Methods+for+Assigning
+    # ---------------------------------------------------------------------------------
+
+    # No Need to Implement
+    # []= : Assigns specified elements with a given object.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-5B-5D-3D
+
+    # push, append, <<: Appends trailing elements.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-push
+    def push(self, *objects: Any) -> Self:
+        """
+        Appends trailing elements. Also aliased as: append_multiple
+
+        Appends each argument in objects to self; returns self:
+        Appends each argument as one element, even if it is another Array:
+
+        Parameters
+        ----------
+        objects: Any
+            Elements to be appended to self.
+
+        Returns
+        -------
+        Self
+            Returns self.
+
+        Examples
+        --------
+        >>> a = Array(['foo', 'bar', 2])
+        >>> a.push('baz','bat')
+        ['foo', 'bar', 2, 'baz', 'bat']
+
+        >>> b = Array(['foo', 'bar', 2])
+        >>> c = b.append(['baz', 'bat'],Array(['bam', 'bad']))
+        >>> c
+        ['foo', 'bar', 2, ['baz', 'bat'], ['bam', 'bad']]
+        >>> b
+        ['foo', 'bar', 2, ['baz', 'bat'], ['bam', 'bad']]
+        """
+        self.extend(objects)
+        return self
+
+    # push, append, <<: Appends trailing elements.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-append
+    # ==> [alias]
+    append = push
+
+    # INEFFICIENT, OPTOMIZE, we can right shift bulk and copy once insted of each element.
+    # unshift, prepend: Prepends leading elements.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-unshift
+    def unshift(self, *objects: Any) -> Self:
+        """
+        Prepends the given objects to self: Also aliased as: prepend
+
+        Prepend (Inserts at beginning) each argument in objects to self; returns self:
+        Prepend each argument as one element, even if it is another Array:
+
+        Parameters
+        ----------
+        objects : Any
+            Elements to be Prepended to self.
+
+        Returns
+        -------
+        Self
+            Returns self.
+
+        Examples
+        --------
+        >>> a =  Array(['foo', 'bar', 2])
+        >>> a.unshift('bam', 'bat', [1, 2])
+        ['bam', 'bat', [1, 2], 'foo', 'bar', 2]
+        >>> a
+        ['bam', 'bat', [1, 2], 'foo', 'bar', 2]
+        """
+        for value in reversed(objects):
+            self.insert(0, value)
+
+        return self
+
+    # unshift, prepend: Prepends leading elements.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-prepend
+    # ==> [alias]
+    prepend = unshift
+
+    # insert: Inserts given objects at a given offset; does not replace elements.
+    # https://docs.ruby-lang.org/en/master/Array.html#method-i-insert
+    def insert(self, _index: SupportsIndex, _object: Any) -> None:
+        """
+        Inserts given objects at a given offset; does not replace elements.
+
+        Inserts given objects before or after the element at Integer index offset; returns self.
+        When index is non-negative, inserts all given objects before the element at offset index:
+
+
+        Parameters
+        ----------
+        _index: int
+            The index in which the object should be inserted.
+        _object: Any
+            The object to be inserted.
+
+        Returns
+        -------
+        Self:
+            Returns self
+
+        Examples
+        --------
+
+
+        """
+        super().insert(_index, _object)
+        return self
 
 
 if __name__ == '__main__':
